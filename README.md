@@ -100,6 +100,10 @@ Unpacked extensions don't auto-update. To take a new version:
 Your data — frens, settings, captured posts, keys — lives in the browser, not in
 this folder, so it survives an update.
 
+If you'd rather not take that on trust, **Settings → Identity & privacy → frens
+list** writes your graph out to a file. Importing it back merges rather than
+replaces, so it's also how you move your frens to another browser or machine.
+
 </details>
 
 ## Uninstalling
@@ -143,9 +147,9 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.1` |
-| Built from | `monemetrics/ct` @ `4352c20` |
-| Built on | 6 August 2026 |
+| Version | `0.0.3` |
+| Built from | `monemetrics/ct` @ `c78d449` |
+| Built on | 8 August 2026 |
 
 ## Links
 
