@@ -147,9 +147,24 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.3` |
-| Built from | `monemetrics/ct` @ `c78d449` |
-| Built on | 8 August 2026 |
+| Version | `0.0.4` |
+| Built from | `monemetrics/ct` @ `9587020` |
+| Built on | 10 August 2026 |
+
+### New in 0.0.4 — notes
+
+Write notes on accounts and on posts, from x.com or from the panel. **`+note`**
+sits beside the follow button on a profile; **`✎`** sits in every post's action
+bar, and on any account or post inside the panel.
+
+A note on a post keeps a **copy of that post** — text, author, media, counts —
+frozen at the moment you wrote it, so it survives the original being edited or
+deleted. That is the difference between this and a bookmark.
+
+The new **notes** tab searches everything you've written and groups it by time,
+by tag, or by who it's about. **Backup** there writes a `json` file that imports
+back, or a `md` archive you can read anywhere. Notes are filed under an
+account's X id rather than their handle, so they survive a rename.
 
 ## Links
 
