@@ -147,11 +147,19 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.4` |
-| Built from | `monemetrics/ct` @ `9587020` |
-| Built on | 10 August 2026 |
+| Version | `0.0.5` |
+| Built from | `monemetrics/ct` @ `02f6a1b` |
+| Built on | 11 August 2026 |
 
-### New in 0.0.4 — notes
+### New in 0.0.5 — notes read as yours
+
+A note used to sit under the avatar of the account it was about, which made
+your own writing look like something they had posted. Now the note itself is
+the card: your words come first, in the accent, under a line that says whose
+post they are about — and the copy of that post sits below with its author's
+face on it, clearly theirs rather than yours.
+
+### 0.0.4 — notes
 
 Write notes on accounts and on posts, from x.com or from the panel. **`+note`**
 sits beside the follow button on a profile; **`✎`** sits in every post's action
