@@ -124,6 +124,7 @@ feature needs it, and nothing collects data about you:
 | **ct.42069.gg** | The wallet-linking page. Wallets can't be reached from inside an extension, so signing happens on a normal web page. |
 | **Robinhood Chain RPC** | Reads a $CT token balance for the broadcast gate. |
 | **beacon-1/2/3.42069.gg** | Relay servers that let peers find each other. Browsers can't connect to each other unaided. |
+| **Downloads** | Saves a post's video when you click **⤓**. Chrome fetches the MP4 itself, so ct never handles the file, and nothing is downloaded unless you ask for it. |
 | **Debugger** | **Off by default.** An optional second way to capture X responses, only if you switch it on in settings. Chrome shows a banner the whole time it's active. |
 
 Everything ct stores stays in your browser. There is no ct account, no server
@@ -147,11 +148,40 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.7` |
-| Built from | `monemetrics/ct` @ `fd0e8dc` |
+| Version | `0.0.8` |
+| Built from | `monemetrics/ct` @ `d7e838b` |
 | Built on | 13 August 2026 |
 
-### New in 0.0.7 — where accounts post from
+### New in 0.0.8 — videos, and a post view for the details
+
+**Videos download, and play in the panel.** Every video and GIF in the feed
+now carries a **⤓** button — hover a post's media to see it — that saves the
+MP4 straight to your downloads, named after the account and post it came from
+rather than X's opaque CDN hash. Clicking the play badge plays it in the panel
+instead of sending you to x.com.
+
+The sources were already arriving in the data ct captures; nothing extra is
+requested from X to make this work, and no third-party downloader service is
+involved. This is the one new permission in this release — see **Downloads** in
+the table above.
+
+**Clicking a post now opens it in the panel.** The card in the feed is tuned
+for scanning a column; the new sheet is the opposite — everything ct holds
+about a post. The author with their bio and follower counts, the full text
+(selectable, so you can actually copy it), media uncropped at its own aspect
+ratio, all six engagement counts with exact figures on hover, every cashtag,
+hashtag, mention and link, and every video rendition listed by resolution and
+bitrate so you can pick which one to save.
+
+Underneath that is a **record** section, which is the part worth knowing about:
+the post and author ids, and — the two that were previously invisible — which X
+operation ct lifted the post from, and whether it arrived from a peer rather
+than from X at all. A post ct heard about over the network is a claim someone
+signed, not something ct saw on X, and now you can tell which is which.
+
+`on x ↗` in the sheet header still takes you to the post on X.
+
+### 0.0.7 — where accounts post from
 
 Every post in the feed now carries the account's country beside its handle —
 🇩🇪, 🇺🇸, 🇪🇪 — read off X's own **About this account** panel.
