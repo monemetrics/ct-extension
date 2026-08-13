@@ -147,11 +147,39 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.5` |
-| Built from | `monemetrics/ct` @ `02f6a1b` |
-| Built on | 11 August 2026 |
+| Version | `0.0.7` |
+| Built from | `monemetrics/ct` @ `fd0e8dc` |
+| Built on | 13 August 2026 |
 
-### New in 0.0.5 — notes read as yours
+### New in 0.0.7 — where accounts post from
+
+Every post in the feed now carries the account's country beside its handle —
+🇩🇪, 🇺🇸, 🇪🇪 — read off X's own **About this account** panel.
+
+Treat it as X's guess rather than a fact. X infers the country from where an
+account connects, and it says as much itself: when it can't narrow one down it
+gives a region instead, and ct shows that dimmed — "Europe" rather than a flag.
+Hover any of them for X's exact wording and whether X called it accurate.
+
+One thing to do first: open any `x.com/<handle>/about` page once. X only asks
+for this data when you visit that page, and ct works by replaying requests it
+has seen — so until you've been there once, there is nothing to replay and no
+flags appear. Accounts are then looked up a few at a time as they turn up in
+your feed, and remembered for a month, because each one costs a request against
+the same X budget your own browsing draws on.
+
+**Settings → Identity & privacy → Show where accounts post from** switches
+between the flag, the two-letter code (`de`, `us`, `ee`), and off. Off stops the
+lookups happening at all rather than just hiding the result.
+
+### 0.0.6 — buttons that follow you
+
+X's router reuses page containers instead of rebuilding them, so moving from one
+profile to the next left ct's `+ct` and `+note` buttons sitting there — still
+carrying the previous account's id. A note written through a stale one was filed
+against the wrong person. Those buttons are now swept on every navigation.
+
+### 0.0.5 — notes read as yours
 
 A note used to sit under the avatar of the account it was about, which made
 your own writing look like something they had posted. Now the note itself is
