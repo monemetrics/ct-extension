@@ -119,7 +119,7 @@ feature needs it, and nothing collects data about you:
 | Permission | Why |
 | --- | --- |
 | **Read your browsing history** | The wording is Chrome's, and it overstates things. ct uses the `tabs` API to open a tab when you click a post, and to notice when an x.com tab has finished loading. It never reads your history. |
-| **Read and change your data on x.com** | Reads the posts and profiles X sends your browser, so it can rank and search them offline. Every request ct makes to X is a read — it never posts, likes, follows or replies. |
+| **Read and change your data on x.com** | Reads the posts and profiles X sends your browser, so it can rank and search them offline. **New in 0.0.9:** it can also act as you — like, repost, and post — but only in the moment you click, and only the action you clicked. ct never acts on your account on its own: nothing automated, nothing scheduled, nothing in the background. It still never follows, replies, or sends DMs. |
 | **Cookies on x.com** | Two cookies only: `twid`, so ct knows which X account you're signed in as, and `ct0`, the CSRF token X requires on its own requests. Neither is stored or sent anywhere. |
 | **ct.42069.gg** | The wallet-linking page. Wallets can't be reached from inside an extension, so signing happens on a normal web page. |
 | **Robinhood Chain RPC** | Reads a $CT token balance for the broadcast gate. |
@@ -148,11 +148,48 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.8` |
-| Built from | `monemetrics/ct` @ `d7e838b` |
-| Built on | 13 August 2026 |
+| Version | `0.0.9` |
+| Built from | `monemetrics/ct` @ `0b8629a` |
+| Built on | 14 August 2026 |
 
-### New in 0.0.8 — videos, and a post view for the details
+### New in 0.0.9 — ct can act, when you tell it to
+
+Until now ct only ever read from X. It can now **like**, **repost**, and
+**post** — and this is the first release where something you do in the panel
+changes something on your actual account, so it's worth reading the shape of it.
+
+**Like and repost from the feed.** The ♥ and ↺ counters under every post are
+now the buttons. They light up when you've already liked or reposted, and the
+number moves as you click. In the post sheet they sit in the header. A repost
+acts on the original post, so reposting something from someone else's repost
+does what you'd expect.
+
+**Post to X from the composer.** The comms box in the network tab has an
+**also post to X** switch beside send. Off it broadcasts to the ct network as
+before; on, the same text goes up on your X account too, and the button reads
+`post` instead of `send`.
+
+It **starts off every time you open the panel and is never remembered**. That
+is deliberate: forgetting to tick it costs you a click, while a remembered tick
+would publish something publicly that you thought you were saying to the ct
+network alone. Ticking it also gets you past the $CT broadcast gate — posting
+to your own X account has nothing to do with the token — so the X half works
+whether or not you've linked a wallet.
+
+**Do each thing once on x.com first.** Same as the About-page note in 0.0.7:
+ct works by replaying requests it has seen your browser make, and it has never
+seen you like anything. So the first like from the panel will tell you to go
+and like one post on x.com — after that it works. Repost and post are the
+same, and each is learned separately. It's a one-off per action, not per
+session, and the message says exactly what to do.
+
+**What ct does with your likes: nothing.** Likes are never broadcast to the ct
+network, never shared with peers, and never leave your browser — the panel is
+the only thing that knows. Reposts and posts do reach the network, because
+they're already public. If a peer sends ct a post claiming you liked it, that
+claim is discarded on arrival.
+
+### 0.0.8 — videos, and a post view for the details
 
 **Videos download, and play in the panel.** Every video and GIF in the feed
 now carries a **⤓** button — hover a post's media to see it — that saves the
