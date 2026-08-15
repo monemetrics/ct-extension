@@ -119,7 +119,7 @@ feature needs it, and nothing collects data about you:
 | Permission | Why |
 | --- | --- |
 | **Read your browsing history** | The wording is Chrome's, and it overstates things. ct uses the `tabs` API to open a tab when you click a post, and to notice when an x.com tab has finished loading. It never reads your history. |
-| **Read and change your data on x.com** | Reads the posts and profiles X sends your browser, so it can rank and search them offline. **New in 0.0.9:** it can also act as you — like, repost, and post — but only in the moment you click, and only the action you clicked. ct never acts on your account on its own: nothing automated, nothing scheduled, nothing in the background. It still never follows, replies, or sends DMs. |
+| **Read and change your data on x.com** | Reads the posts and profiles X sends your browser, so it can rank and search them offline. **Since 0.0.9:** it can also act as you — like, repost, and post — but only in the moment you click, and only the action you clicked. ct never acts on your account on its own: nothing automated, nothing scheduled, nothing in the background. It still never follows, replies, or sends DMs. |
 | **Cookies on x.com** | Two cookies only: `twid`, so ct knows which X account you're signed in as, and `ct0`, the CSRF token X requires on its own requests. Neither is stored or sent anywhere. |
 | **ct.42069.gg** | The wallet-linking page. Wallets can't be reached from inside an extension, so signing happens on a normal web page. |
 | **Robinhood Chain RPC** | Reads a $CT token balance for the broadcast gate. |
@@ -148,11 +148,32 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.9` |
-| Built from | `monemetrics/ct` @ `0b8629a` |
-| Built on | 14 August 2026 |
+| Version | `0.0.10` |
+| Built from | `monemetrics/ct` @ `2f5c79b` |
+| Built on | 15 August 2026 |
 
-### New in 0.0.9 — ct can act, when you tell it to
+### New in 0.0.10 — filter by what a post carries
+
+The tuner has a new **type** row, above **last**: `text`, `images`, `video`,
+`gifs`, `links`. Press one and the feed keeps only posts carrying that; press
+several and it keeps posts carrying any of them. Press none and everything
+comes through — which is also what pressing all five does, since every post
+lands in at least one of them.
+
+Three things it does that you'd otherwise have to discover by watching it:
+
+- **`text` means no media and no link** — the posts that are only writing.
+- **`links` means it points off X.** X attaches the quoted post's own permalink
+  to every quote post; counting that would make every quote a link post, so it
+  doesn't count.
+- **A repost is judged by the post it repeats**, and media inside a quoted post
+  counts too — both because that is what you're actually looking at in the card.
+
+The readout at the top of the panel names the constraint alongside the sort and
+the time window — `time · 2d · images` — so a feed emptied by a type filter
+reads as a filter you set rather than as a build that stopped working.
+
+### 0.0.9 — ct can act, when you tell it to
 
 Until now ct only ever read from X. It can now **like**, **repost**, and
 **post** — and this is the first release where something you do in the panel
