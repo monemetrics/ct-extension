@@ -148,11 +148,33 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.10` |
-| Built from | `monemetrics/ct` @ `2f5c79b` |
-| Built on | 15 August 2026 |
+| Version | `0.0.11` |
+| Built from | `monemetrics/ct` @ `2e98657` |
+| Built on | 16 August 2026 |
 
-### New in 0.0.10 — filter by what a post carries
+### New in 0.0.11 — the broadcast gate drops to 100,000 $CT
+
+Publishing a broadcast used to need **1,000,000 $CT** in a linked wallet. It now
+needs **100,000** — a tenth of what it was, and 0.01% of supply instead of 0.1%.
+
+Nothing else about the gate changes. It is still only on broadcasts, the one
+verb that reaches every peer at once; reading, DMs and the post pool are open to
+everyone and always will be. Linking is still a plain `personal_sign` — no
+transaction, no approval, no gas — and holding is still the whole ticket: your
+balance is read fresh from Robinhood Chain by every peer you talk to, so nothing
+is spent and nothing is locked up.
+
+**If you signed a pass already, it still works.** A pass says which wallet owns
+your peer key; it never carried the amount. Peers re-read the balance on their
+own schedule, so the lower bar takes effect for you as soon as the peers you're
+talking to are running this version.
+
+**If you were short of the old bar, check again.** Settings → **network** names
+the threshold this build enforces, and the wallet-linking page reads your
+balance straight from Robinhood Chain and tells you whether it clears — the
+same page you'd use to link a wallet in the first place.
+
+### 0.0.10 — filter by what a post carries
 
 The tuner has a new **type** row, above **last**: `text`, `images`, `video`,
 `gifs`, `links`. Press one and the feed keeps only posts carrying that; press
