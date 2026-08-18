@@ -122,13 +122,15 @@ feature needs it, and nothing collects data about you:
 | **Read and change your data on x.com** | Reads the posts and profiles X sends your browser, so it can rank and search them offline. **Since 0.0.9:** it can also act as you — like, repost, and post — but only in the moment you click, and only the action you clicked. ct never acts on your account on its own: nothing automated, nothing scheduled, nothing in the background. It still never follows, replies, or sends DMs. |
 | **Cookies on x.com** | Two cookies only: `twid`, so ct knows which X account you're signed in as, and `ct0`, the CSRF token X requires on its own requests. Neither is stored or sent anywhere. |
 | **ct.42069.gg** | The wallet-linking page. Wallets can't be reached from inside an extension, so signing happens on a normal web page. |
-| **Robinhood Chain RPC** | Reads a $CT token balance for the broadcast gate. |
+| **Robinhood Chain RPC** | Reads token balances for the broadcast gate and the wallet, and — **since 0.0.12** — sends the swaps you confirm. Nothing is signed or sent without you pressing swap. |
 | **beacon-1/2/3.42069.gg** | Relay servers that let peers find each other. Browsers can't connect to each other unaided. |
 | **Downloads** | Saves a post's video when you click **⤓**. Chrome fetches the MP4 itself, so ct never handles the file, and nothing is downloaded unless you ask for it. |
 | **Debugger** | **Off by default.** An optional second way to capture X responses, only if you switch it on in settings. Chrome shows a banner the whole time it's active. |
 
 Everything ct stores stays in your browser. There is no ct account, no server
-holding your data, and no analytics or telemetry of any kind.
+holding your data, and no analytics or telemetry of any kind. Since 0.0.12 that
+includes a wallet key, encrypted with your password — which also means **ct
+cannot recover it for you**. See below.
 
 Full detail: **[ct.42069.gg/privacy.html](https://ct.42069.gg/privacy.html)**
 
@@ -148,11 +150,70 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.11` |
-| Built from | `monemetrics/ct` @ `2e98657` |
-| Built on | 16 August 2026 |
+| Version | `0.0.12` |
+| Built from | `monemetrics/ct` @ `1268909` |
+| Built on | 18 August 2026 |
 
-### New in 0.0.11 — the broadcast gate drops to 100,000 $CT
+### New in 0.0.12 — a wallet, and swapping without leaving X
+
+ct has always been able to *read* a $CT balance. It could never hold one. This
+release adds a wallet and a swap tab, so buying $CT — or any of the tokenized
+stocks on Robinhood Chain — happens in the panel rather than on someone else's
+site.
+
+**Read the recovery warning before you fund anything.** The wallet is created
+in your browser and encrypted at rest with a password only you know. There is
+no reset, no support address, and no copy anywhere else. If you lose the
+password without having written down the seed phrase, the funds are gone — and
+nobody at ct can do anything about it. Setup makes you acknowledge exactly that
+before it will create the wallet, and **back up** in the swap tab's wallet
+header shows the phrase again whenever you want it.
+
+**The swap tab.** Pick two tokens, type an amount, press swap. Alongside the
+amount are **$25 / $50 / $100** buttons, priced from the same pools the trade
+will hit — nobody knows what 0.0055 ETH is, and everybody knows what $25 is.
+The token list carries ct's own five plus the 100 tokenized stocks, with
+anything you already hold at the top.
+
+**Buy buttons on cashtags.** A post mentioning `$NVDA` or `$AMD` now carries a
+small **buy** button in its action bar, next to `+note`, for any ticker that has
+a pool. Pressing it opens the panel with that trade set up. Only cashtags with
+the `$` count — the ticker list contains `ALL`, `APP` and `NET`, and a feed
+sprouting buy buttons on the word "all" is not a feature.
+
+**Routes are found for you.** Most tokenized stocks have a pool against exactly
+one thing — some only against USDG, some only against ether, and $CT only
+against ether. When there is no direct pool, ct composes a route through one or
+two of them and sends **the whole thing as a single transaction**: it either
+completes or it reverts and you keep what you had. `$AMD` to `$CT` really is
+`AMD → USDG → ETH → CT`, and the route panel names every pool it passes
+through.
+
+**Where the price comes from.** There is no aggregator, no API key and no ct
+server in the path. A contract on Robinhood Chain quotes every venue in a
+single read and hands back the calldata to execute, so the number you are shown
+and the number you receive come from the same pool. That matters more here than
+it sounds: $CT alone has around fifteen zero-liquidity pools charging 87–99%
+fees, and the route panel will show you them quoting nothing.
+
+**ct takes 0.5% of a swap**, shown as its own line next to the rate rather than
+folded quietly into the output. Swaps involving $CT are free, and so is
+wrapping ETH. The fee is for the interface — the contracts are public and
+anyone can call them directly and pay nothing.
+
+**Smaller things.** A toast reports each swap as it is submitted, confirms or
+fails, and it follows you across tabs — failures stay until you dismiss them,
+because that is the only place the reason appears. The wallet shows its full
+address with copy and explorer buttons. The idle lock went from 15 minutes to
+an hour.
+
+**What has not changed:** ct still holds no account of yours and still sends
+nothing to a server. This wallet is also separate from the broadcast gate — the
+gate reads a balance from whichever wallet you linked at
+[ct.42069.gg](https://ct.42069.gg), and that page and its `personal_sign` flow
+work exactly as before. Swapping here does not link anything.
+
+### 0.0.11 — the broadcast gate drops to 100,000 $CT
 
 Publishing a broadcast used to need **1,000,000 $CT** in a linked wallet. It now
 needs **100,000** — a tenth of what it was, and 0.01% of supply instead of 0.1%.
