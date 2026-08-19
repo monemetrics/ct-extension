@@ -150,11 +150,54 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.12` |
-| Built from | `monemetrics/ct` @ `1268909` |
-| Built on | 18 August 2026 |
+| Version | `0.0.13` |
+| Built from | `monemetrics/ct` @ `7ce5deb` |
+| Built on | 19 August 2026 |
 
-### New in 0.0.12 — a wallet, and swapping without leaving X
+### New in 0.0.13 — read the whole conversation
+
+Opening a post used to show you that post and nothing around it. A reply
+arrived with no sign of what it was answering, and the replies underneath it —
+usually the reason the post is worth reading at all — weren't there.
+
+**The post sheet is now a thread.** What the post replies to sits above it, in
+order, running down into it. The replies sit below. Tap any of them to open
+that one instead, and a **← back** button appears in the header to walk you out
+again.
+
+**A tweetstorm reads as one column.** Someone continuing their own post doesn't
+get indented — it's one piece of writing, and X numbers it that way. Someone
+*answering* does get indented, and so does the author when they answer somebody
+else, because that really is a reply rather than a continuation.
+
+**Where the replies come from.** Opening a post fetches its conversation from X
+once — one request, the same one x.com makes when you open a status page — and
+everything in it is kept. But the thread you see is assembled from everything ct
+holds, not just from that one response. So replies captured earlier show up too,
+the thread fills in as you browse, and it still renders when X is unreachable.
+Re-opening the same post reads what's stored rather than spending another
+request; **↻** next to **replies** asks X again.
+
+**It will tell you what it doesn't have.** Two honest limits, both said on
+screen rather than papered over. X returns the first page of replies, not all of
+them, so a post X counts 40 replies on may show fewer — the sheet says
+`X counts 40 in total — ct holds 12`. And ct only holds what it has seen, so a
+long chain can start in the middle; where that happens you get a line offering
+the earlier posts on x.com.
+
+**Do it once on x.com first.** Same as the About page in 0.0.7 and the actions
+in 0.0.9: ct replays requests it has watched your browser make, and it has never
+seen you open a post's page. So the first thread will ask you to open any post
+on x.com once. After that it works everywhere, and it's a one-off, not a
+per-session thing.
+
+**Replies aren't buttons.** The ♥ ↺ ↩ counts on a post inside a thread are text,
+not controls, unlike the ones on a feed card. In a dense column of near-identical
+rows a mis-tap would like a stranger's reply on your real X account. Open the
+reply and the buttons are there, on a screen that shows you what you're about to
+act on.
+
+### 0.0.12 — a wallet, and swapping without leaving X
 
 ct has always been able to *read* a $CT balance. It could never hold one. This
 release adds a wallet and a swap tab, so buying $CT — or any of the tokenized
