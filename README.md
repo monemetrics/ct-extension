@@ -54,6 +54,12 @@ That's it. ct starts learning from the posts your browser already loads — give
 it a few minutes of normal scrolling before the feed has anything interesting
 in it.
 
+**Follow the tour.** Since 0.0.14 the panel opens on a seven-step tour, at the
+top of the feed and behind the `tour` chip in the titlebar. It is worth the ten
+minutes: a few parts of ct genuinely cannot work until you have done the
+equivalent thing on x.com once, and the tour is the only place that says which.
+You can hide it and come back — it counts what you do either way.
+
 <details>
 <summary><b>Other Chromium browsers</b></summary>
 
@@ -121,8 +127,8 @@ feature needs it, and nothing collects data about you:
 | **Read your browsing history** | The wording is Chrome's, and it overstates things. ct uses the `tabs` API to open a tab when you click a post, and to notice when an x.com tab has finished loading. It never reads your history. |
 | **Read and change your data on x.com** | Reads the posts and profiles X sends your browser, so it can rank and search them offline. **Since 0.0.9:** it can also act as you — like, repost, and post — but only in the moment you click, and only the action you clicked. ct never acts on your account on its own: nothing automated, nothing scheduled, nothing in the background. It still never follows, replies, or sends DMs. |
 | **Cookies on x.com** | Two cookies only: `twid`, so ct knows which X account you're signed in as, and `ct0`, the CSRF token X requires on its own requests. Neither is stored or sent anywhere. |
-| **ct.42069.gg** | The wallet-linking page. Wallets can't be reached from inside an extension, so signing happens on a normal web page. |
-| **Robinhood Chain RPC** | Reads token balances for the broadcast gate and the wallet, and — **since 0.0.12** — sends the swaps you confirm. Nothing is signed or sent without you pressing swap. |
+| **ct.42069.gg** | The wallet-linking page, for linking an *external* wallet — those can't be reached from inside an extension, so signing has to happen on a normal web page. **Since 0.0.14** ct's built-in wallet signs its own pass in the panel, so most people never open this. |
+| **Robinhood Chain RPC** | Reads token balances for the broadcast gate and the wallet, and — **since 0.0.12** — sends the swaps you confirm. Nothing is *sent to the chain* without you pressing swap. **Since 0.0.14** ct will sign a broadcast pass by itself once your built-in wallet holds 100,000 $CT: that is a signature over a plain sentence, not a transaction — it spends nothing, approves nothing, and costs no gas. Switch it off under Settings → Network. |
 | **beacon-1/2/3.42069.gg** | Relay servers that let peers find each other. Browsers can't connect to each other unaided. |
 | **Downloads** | Saves a post's video when you click **⤓**. Chrome fetches the MP4 itself, so ct never handles the file, and nothing is downloaded unless you ask for it. |
 | **Debugger** | **Off by default.** An optional second way to capture X responses, only if you switch it on in settings. Chrome shows a banner the whole time it's active. |
@@ -150,11 +156,91 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.13` |
-| Built from | `monemetrics/ct` @ `7ce5deb` |
-| Built on | 19 August 2026 |
+| Version | `0.0.14` |
+| Built from | `monemetrics/ct` @ `2e8d231` |
+| Built on | 20 August 2026 |
 
-### New in 0.0.13 — read the whole conversation
+### New in 0.0.14 — a tour, and a wallet that lets itself in
+
+Two things in this release, and they're the same complaint from opposite ends:
+ct asks you to do a handful of specific things before parts of it work, and it
+never said so.
+
+**There's a tour now — seven steps, and it counts itself.** A `tour n/7` chip
+sits in the titlebar next to `docs`, and while it's unfinished the current step
+also sits above your feed, which is where a fresh install lands and stares.
+Plug in · first fren · teach ct your hands · keep something · go live · make a
+wallet · earn the mic.
+
+None of those are busywork. They're the things that genuinely have to happen
+first, and the tour exists because several of them are impossible to guess:
+
+> **Why the like button doesn't work until you use X's.** ct acts on X by
+> replaying requests it has watched your browser make — that's what lets it work
+> with no API key and no ct account. X only issues a like request when a human
+> presses the heart, so a fresh install has a like button that is correctly
+> wired and completely inert. Same for reposting. Press each once on x.com and
+> both come alive in the panel, permanently.
+
+The tour's third step points at
+[our post](https://x.com/ctextension/status/2087110695947018381) as the thing to
+practise on, which is self-serving and we won't pretend otherwise — but any post
+counts, and the card says so. ct records the shape of the request, never which
+post it was for. Once both are learned, that same post re-appears *inside the
+panel* with working like and repost buttons, which is the demonstration: the
+thing you just taught it, on the post you taught it with.
+
+**It counts what you actually did, not what you clicked here.** Progress is read
+off the real state of the extension — the recorded requests, your graph, your
+wallet — so if you've been using ct for weeks you'll open the tour already at
+5/7. Steps completed while the panel was shut are simply green when it opens.
+Nothing un-ticks: your frens list is per X account, so switching accounts would
+otherwise wipe two steps, and that's not how achievements work.
+
+**Pause it whenever.** `hide` on the card, or `pause` in the sheet. Progress
+keeps counting while it's away — it was never the tour's to count. `restart`
+puts the framing back and re-ticks most boxes immediately, because they describe
+things you still have.
+
+---
+
+**The built-in wallet now clears the broadcast gate on its own.** Broadcasting
+still needs 100,000 $CT, and that hasn't moved. What's changed is what happens
+when you have it.
+
+Before, the only wallet ct could prove anything about was an external one, and
+proving it meant a trip to a web page — because wallet extensions can't be
+reached from inside another extension, so there was nowhere else for the
+signature to happen. None of that applies to the wallet ct added in 0.0.12: it's
+ct's own key. So when it holds enough, ct signs the pass itself, in the
+background, and you can just broadcast. No page opens, nothing to confirm, no
+transaction and no gas.
+
+It checks at the moments that can actually change the answer — a swap
+confirming, unlocking your wallet, switching accounts — so buying $CT in the
+swap tab and then broadcasting is now one continuous thing rather than two with
+a detour in between.
+
+**It won't touch a wallet you linked yourself.** If you've already linked an
+external wallet and it still works, ct leaves it alone. A pass says publicly
+which address speaks for your peer — quietly swapping that for a different one
+isn't ours to do. There's a switch for the whole behaviour in **Settings →
+Network → Use ct's own wallet**, on by default. Worth knowing why you might turn
+it off: the pass links your trading wallet to your peer identity in public. It
+always did that — but before, you opted in by walking through the page.
+
+**A closed gate now tells you which closed gate it is.** "Link a wallet holding
+$CT" was the only thing it ever said, including to people whose wallet held
+plenty and was merely locked. Now it distinguishes: locked wallet, short of the
+threshold, chain not answering, nothing linked — each with the button that
+actually helps. It reads your balance before it mentions the lock, so it never
+claims you hold enough without having looked.
+
+**You no longer need the network running to link.** ct mints your peer key per X
+account and holds it whether or not the node is up, so a pass can be signed
+before you've ever pressed **start**.
+
+### 0.0.13 — read the whole conversation
 
 Opening a post used to show you that post and nothing around it. A reply
 arrived with no sign of what it was answering, and the replies underneath it —
