@@ -156,11 +156,64 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.14` |
-| Built from | `monemetrics/ct` @ `2e8d231` |
-| Built on | 20 August 2026 |
+| Version | `0.0.15` |
+| Built from | `monemetrics/ct` @ `b604359` |
+| Built on | 24 August 2026 |
 
-### New in 0.0.14 — a tour, and a wallet that lets itself in
+### New in 0.0.15 — mute an account, and a switch for the peer firehose
+
+Two ways to turn the volume down, from opposite ends: one person you don't want
+to read, or the whole network at once.
+
+**Every post now carries a `⊘ mute`.** It hides that account — in the feed, and
+in the replies under any post you open. Hover a post to see it; it sits at the
+end of the row, past `✎ note`, deliberately out of thumb's reach.
+
+The part that isn't obvious, and the reason this is here at all: **it covers
+posts that came from peers.** ct pools captured posts, so a post can reach your
+feed having never passed through your browser on x.com — muting someone on X
+does nothing about that copy, because X was never in the path. This mute drops
+them on arrival as well as in the feed, so an account you never followed can't
+reach you through the pool either.
+
+A few decisions worth knowing:
+
+- **It's keyed to X's numeric id, not the handle.** They can rename as often as
+  they like and stay muted. If they drop the handle and somebody else picks it
+  up, that person does *not* inherit the mute.
+- **It hides other people's reposts of them too**, or a mute would last only
+  until someone amplified them.
+- **A quote of a muted account still shows.** That's somebody else's post about
+  them, which is often exactly what you want to see.
+- **It is a hide, not a block.** Nothing is disconnected and nothing already
+  captured is deleted — unmute and their posts come back. It also doesn't touch
+  x.com; ct is not driving X's own mute list.
+
+Muting an **account** is a different thing from muting a **peer**, which ct has
+always had and which really is a disconnect. Both lists live in **Settings →
+Moderation**, separately, and both belong to the X account you were signed in as
+when you made them.
+
+---
+
+**The tuner has a `peers` row.** Two keys, both on by default:
+
+`pooled posts` — the posts other peers captured and shared, the ones marked
+*"from a peer, not seen on X"*. Off, the feed is built from nothing but what
+this browser saw itself.
+
+`casts` — live broadcasts, interleaved with the posts. Off hides them **from
+the feed only**; comms still receives every one, so this is about what
+interrupts your reading rather than about refusing to listen.
+
+Switch both off and you are back to your own algo on your own capture, which is
+the setting to reach for when the network is noisier than it is useful. The
+readout at the top of the panel says `no peers` when you do — a quiet feed
+should read as a filter you set, not as a build that stopped working. Nothing
+about this stops you *sharing*; that's still its own switch in Settings →
+Network.
+
+### 0.0.14 — a tour, and a wallet that lets itself in
 
 Two things in this release, and they're the same complaint from opposite ends:
 ct asks you to do a handful of specific things before parts of it work, and it
