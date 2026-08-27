@@ -156,11 +156,33 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.15` |
-| Built from | `monemetrics/ct` @ `b604359` |
-| Built on | 24 August 2026 |
+| Version | `0.0.16` |
+| Built from | `monemetrics/ct` @ `8f4dacb` |
+| Built on | 27 August 2026 |
 
-### New in 0.0.15 — mute an account, and a switch for the peer firehose
+### New in 0.0.16 — open a noted post without leaving ct
+
+Notes were built before ct had a reader of its own. So the frozen copy of the
+post sat at the bottom of every note with no way into it, and the only way to
+see the post properly was `on x.com ↗` — a tab, on the site you keep notes to
+avoid having to read.
+
+**Click the post inside a note and it opens in ct's post view**, the same sheet
+a card in the feed opens: the conversation above and below it, every metric ct
+holds, media at full size, and the `✎` to add another note to the pile you are
+already reading. Keyboard too — tab to it, Enter.
+
+What opens is ct's *current* record of the post, where it has one. The frozen
+copy is what the post looked like the day you wrote about it — the right thing
+to show on the note, and the wrong thing to open, because the counters and the
+like button in the post view describe the post now. Where ct has no record —
+a post it never captured, or one long gone from the corpus — the note's own
+copy opens instead, since that is the only copy left anywhere. The note keeps
+showing you its snapshot either way; nothing about what you saved changes.
+
+`on x.com ↗` is still there, and still goes to X.
+
+### 0.0.15 — mute an account, and a switch for the peer firehose
 
 Two ways to turn the volume down, from opposite ends: one person you don't want
 to read, or the whole network at once.
