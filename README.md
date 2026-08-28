@@ -131,6 +131,7 @@ feature needs it, and nothing collects data about you:
 | **Robinhood Chain RPC** | Reads token balances for the broadcast gate and the wallet, and — **since 0.0.12** — sends the swaps you confirm. Nothing is *sent to the chain* without you pressing swap. **Since 0.0.14** ct will sign a broadcast pass by itself once your built-in wallet holds 100,000 $CT: that is a signature over a plain sentence, not a transaction — it spends nothing, approves nothing, and costs no gas. Switch it off under Settings → Network. |
 | **beacon-1/2/3.42069.gg** | Relay servers that let peers find each other. Browsers can't connect to each other unaided. |
 | **Downloads** | Saves a post's video when you click **⤓**. Chrome fetches the MP4 itself, so ct never handles the file, and nothing is downloaded unless you ask for it. |
+| **Notifications** | **Since 0.0.17.** Raises a desktop notification when one of your alert topics matches — nothing else uses it. Every topic has its own bell, off is per topic, and Settings → Alerts has a master switch that silences all of them at once. No topics means no notifications, ever. |
 | **Debugger** | **Off by default.** An optional second way to capture X responses, only if you switch it on in settings. Chrome shows a banner the whole time it's active. |
 
 Everything ct stores stays in your browser. There is no ct account, no server
@@ -156,11 +157,76 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.16` |
-| Built from | `monemetrics/ct` @ `8f4dacb` |
-| Built on | 27 August 2026 |
+| Version | `0.0.17` |
+| Built from | `monemetrics/ct` @ `427706f` |
+| Built on | 28 August 2026 |
 
-### New in 0.0.16 — open a noted post without leaving ct
+### New in 0.0.17 — alerts: watch a subject, not an account
+
+X only knows how to notify you about *people*. Turn the bell on for someone and
+you get everything they post, and there is no way at all to say "tell me when
+anyone starts talking about this". Which is backwards for the case that actually
+matters — during something fast-moving, almost every post worth seeing is
+written by an account you have never heard of.
+
+**The new 🔔 tab watches subjects.** A topic is a standing X search — `$SOL OR
+#solana`, `"depeg" -filter:replies`, `from:someone min_faves:50` — with its own
+feed and its own bell. Add one from the tab, or search in **find** and press
+**watch it**, which turns what you just typed into a topic.
+
+Each topic fills from two directions, and the second one is the part that makes
+it work offline of your own attention:
+
+- **ct searches X for it** in the background, on a rotation. This is the half
+  that reaches strangers, and it is the half that costs requests.
+- **Every post ct captures anyway** — your home timeline, your frens, ordinary
+  browsing, posts other peers contributed — is matched against every topic on
+  its way in. That costs nothing, so a matching post from a fren lands in the
+  topic feed the moment it arrives rather than at the next search.
+
+The query is **X's own search syntax and is sent to X exactly as typed**, so a
+query you tuned in x.com's search box works here unchanged: quotes for a phrase,
+`OR` between alternatives, `-` to exclude, brackets to group, `min_faves:`,
+`from:`, `lang:`, `-filter:replies`. A few operators only X can evaluate
+(`until:`, `geocode:`) — the composer says so, because for those the free half
+above goes quiet and the topic only fills when it searches.
+
+**Each topic has its own cadence.** Watch something moving fast every minute and
+something slow every three hours, from the topic's **edit**. Setting everything
+to a minute does not multiply the requests: a round is capped either way, so a
+fast topic simply gets picked more often than a slow one. Topics can also be
+paused (`◌`), which stops the searching but keeps the free half collecting —
+the right setting for a subject you care about but not today.
+
+**Notifications are per topic, and coalesced.** One notification per topic per
+batch rather than one per post, with a floor between them, and a per-topic *only
+over N likes* threshold — which is the setting that makes watching a busy hashtag
+survivable at all. Everything still lands in the topic feed regardless; the
+threshold only governs what is allowed to interrupt you. The toolbar icon carries
+the total unread, so you can turn every bell off and still have a number to come
+back to.
+
+One honest limitation: the searching half needs ct to have seen X issue a search
+once, because ct replays X's own requests rather than pretending to be a client
+it isn't. **Run one search on x.com** and every topic works from then on — the
+alerts tab says so if you haven't.
+
+**Settings → Alerts** holds the default cadence for topics that don't override
+it, and the master switch for notifications.
+
+#### Also: the net tab is gone, and connect moved to the titlebar
+
+The network tab was a screen people opened twice — once out of curiosity, once
+when peers wouldn't appear — and it was taking a column the tab strip needed.
+
+**The connect button is now in the titlebar**, next to the dot and the peer count
+it changes, which is where a thing you press several times an hour belongs. The
+diagnostics it sat above — node state, the peer list, your addresses — are under
+**Settings → Network**, below the sharing and beacon controls that were already
+there. Nothing was removed; `find`, `alerts` and `settings` now wear an icon
+rather than a word so eight tabs fit a narrow panel.
+
+### 0.0.16 — open a noted post without leaving ct
 
 Notes were built before ct had a reader of its own. So the frozen copy of the
 post sat at the bottom of every note with no way into it, and the only way to
