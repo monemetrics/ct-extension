@@ -157,11 +157,54 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.17` |
-| Built from | `monemetrics/ct` @ `427706f` |
-| Built on | 28 August 2026 |
+| Version | `0.0.18` |
+| Built from | `monemetrics/ct` @ `0b15075` |
+| Built on | 1 September 2026 |
 
-### New in 0.0.17 — alerts: watch a subject, not an account
+### New in 0.0.18 — the account behind the handle, and notes that outlive a block
+
+A handle is rented. X frees one the moment its holder drops it, anyone can take
+it, and an account can rename itself as often as it likes — which on crypto
+twitter is not an edge case, it's the method: wear a name people already trust,
+take what you can, rename.
+
+ct has always known this. Every note you have written was filed under the
+account's **numeric X id** — assigned once at signup, never reassigned — which
+is why a renamed account's notes never went missing. But the id was never shown,
+so the one fact that settles *is this the same guy* sat in the database being
+useful to nobody.
+
+**Notes now show it.** `@handle = 1234567890`, with the date you wrote, on every
+note card, in both composers — the panel's and the one on x.com — and in the
+section header when you group by account. Click it to copy. It's monospace
+because the only thing anyone ever does with an eighteen-digit number is line it
+up against another one.
+
+Nothing was migrated and nothing was refiled; the id was already there. Notes
+you wrote a year ago show it too.
+
+#### Notes survive a block
+
+Blocking is where this mattered most and worked least. ct found out which
+account a profile belonged to by reading X's own follow button, and a blocked
+profile doesn't have one — so on exactly the profile where you most want to read
+back what you wrote, the `+note` button didn't appear at all, and there was no
+way to reach the notes from the page.
+
+**It appears now**, on a profile you've blocked and on one that has blocked you,
+carrying the count of what you've already written there. Where X publishes no id
+anywhere on the page, ct matches the handle in the URL against the notes it
+already holds. The side panel was never affected — notes live in ct's own
+storage and have never needed X's permission to be read — but the panel is not
+where you are standing when you want them.
+
+One limitation worth stating: a *post* by a blocked account renders as "This
+Post is unavailable" and carries no post id anywhere in the page, so there is
+nothing for the `✎` to attach to. The note is still on the account's profile and
+in the panel, with its frozen copy of the post intact. Only the marker in place
+is missing.
+
+### 0.0.17 — alerts: watch a subject, not an account
 
 X only knows how to notify you about *people*. Turn the bell on for someone and
 you get everything they post, and there is no way at all to say "tell me when
