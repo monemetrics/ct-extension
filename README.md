@@ -157,11 +157,50 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.18` |
-| Built from | `monemetrics/ct` @ `0b15075` |
+| Version | `0.0.19` |
+| Built from | `monemetrics/ct` @ `aba6119` |
 | Built on | 1 September 2026 |
 
-### New in 0.0.18 — the account behind the handle, and notes that outlive a block
+### New in 0.0.19 — read one account, across every name it has worn
+
+0.0.18 put the numeric X id on your notes. This makes it do something.
+
+**Click an id and the list narrows to that account** — the same gesture as
+clicking a tag, and the same result: everything you have written about one
+person, oldest to newest, in one column. Or paste an id straight into the search
+box. ct treats a bare number as an account rather than as a search term, because
+ids appear nowhere in the words of a note, and running one as a search would
+answer "you have no notes on them" — the one answer that must never be wrong.
+
+The filter is on the id, never the handle. That is the whole reason it is worth
+having: an account that renamed twice is still one account, and this is the only
+filter in the panel a rename cannot break.
+
+#### What they used to be called
+
+Notes show whoever an account is *now* — ct refreshes the handle on your notes
+from what it captures, so a name change doesn't leave you reading about someone
+who no longer exists under that name.
+
+The frozen posts don't work that way, and never did. A copy of a post is never
+rewritten — that is the entire promise of keeping one — so the copy attached to
+a note from March still carries the handle its author was wearing in March.
+
+So the rename history was already sitting on your disk. Nothing was recording
+it, because nothing had thought to look. **Now a filtered account shows the
+names it has been through:**
+
+> also seen as **@oldname** until 29/08/26 — same account throughout, which is
+> how these notes stayed together.
+
+Nothing was migrated to make this work. Notes you wrote a year ago have it too.
+
+One thing it deliberately won't do: a note on a post that *quotes* somebody else
+carries that stranger's handle in the copy as well, and counting it would accuse
+an account of once having been named after someone it happened to quote. Only
+the post's own author counts.
+
+### 0.0.18 — the account behind the handle, and notes that outlive a block
 
 A handle is rented. X frees one the moment its holder drops it, anyone can take
 it, and an account can rename itself as often as it likes — which on crypto
