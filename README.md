@@ -129,6 +129,7 @@ feature needs it, and nothing collects data about you:
 | **Cookies on x.com** | Two cookies only: `twid`, so ct knows which X account you're signed in as, and `ct0`, the CSRF token X requires on its own requests. Neither is stored or sent anywhere. |
 | **ct.42069.gg** | The wallet-linking page, for linking an *external* wallet — those can't be reached from inside an extension, so signing has to happen on a normal web page. **Since 0.0.14** ct's built-in wallet signs its own pass in the panel, so most people never open this. |
 | **Robinhood Chain RPC** | Reads token balances for the broadcast gate and the wallet, and — **since 0.0.12** — sends the swaps you confirm. Nothing is *sent to the chain* without you pressing swap. **Since 0.0.14** ct will sign a broadcast pass by itself once your built-in wallet holds 100,000 $CT: that is a signature over a plain sentence, not a transaction — it spends nothing, approves nothing, and costs no gas. Switch it off under Settings → Network. |
+| **Uniswap's pool index** | **New in 0.0.20.** Depth, 24-hour volume and fee APR for a token's pools, and the list of what Robinhood has tokenized — none of which is readable from the chain itself. Asked only when you open **explore** or a pool table, never while you read a timeline. The request carries a token address and nothing else: no wallet address, no cookie, no X identity, no key. It is the only third-party API ct calls. |
 | **beacon-1/2/3.42069.gg** | Relay servers that let peers find each other. Browsers can't connect to each other unaided. |
 | **Downloads** | Saves a post's video when you click **⤓**. Chrome fetches the MP4 itself, so ct never handles the file, and nothing is downloaded unless you ask for it. |
 | **Notifications** | **Since 0.0.17.** Raises a desktop notification when one of your alert topics matches — nothing else uses it. Every topic has its own bell, off is per topic, and Settings → Alerts has a master switch that silences all of them at once. No topics means no notifications, ever. |
@@ -157,11 +158,76 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.19` |
-| Built from | `monemetrics/ct` @ `aba6119` |
-| Built on | 1 September 2026 |
+| Version | `0.0.20` |
+| Built from | `monemetrics/ct` @ `289fb4b` |
+| Built on | 2 September 2026 |
 
-### New in 0.0.19 — read one account, across every name it has worn
+### New in 0.0.20 — the markets behind the ticker
+
+A tokenized stock on Robinhood Chain is not one market. `$AAPL` sits in about
+twenty pools: three against USDG across two Uniswap versions, one against ether,
+one against `$NVDA`, one against `$SPY` — and a dozen against memecoins minted
+specifically to pair with it, several of which turn over more in a day than the
+stock's own dollar pool does.
+
+None of that was reachable from a swap box you had to already know what to type
+into.
+
+**The swap tab now opens on explore.** Every market ct ships, ranked by 24-hour
+volume, searchable, filterable to tokenized stocks or to what you actually hold.
+Open a row and it shows that token's deepest pools — pair, Uniswap version, fee,
+TVL, 24-hour volume and fee APR — and tapping one loads the pair into the
+composer, which is itself rebuilt around *pay* and *receive* with the winning
+route named underneath.
+
+The composer has not changed what it does. The route is still chosen on chain by
+`CtQuoter` inside a single call, and the price you are shown is still the price
+that pool will fill, net of ct's fee.
+
+#### 191 tickers, and the first ETFs
+
+The list ct ships went from **100 to 191**. Everything new is in it — `$SPY`,
+`$QQQ`, `$GLD`, `$SLV`, `$SGOV`, `$LLY`, `$BA`, `$F`, ninety-one in all,
+including the first tokenized ETFs Robinhood has issued.
+
+Every one was rebuilt against the chain rather than copied from an API: the
+symbol and decimals below each ticker are what the contract answers, not what an
+index claimed. That check is not ceremony — the roster still reports `SKYHY` for
+a token whose contract says `SKHY`, and a cashtag that matches nothing you can
+buy is worse than no cashtag.
+
+#### It now tells you when it's behind
+
+Ninety-one tickers appeared in two weeks. A list baked into a release cannot keep
+up with that, and the old failure was silent: search `$SPY` in a build that
+predated it and you got nothing, with no way to tell "ct has never heard of this"
+from "this is not tokenized".
+
+**The token picker now says which it is.** Opening it checks Robinhood's roster —
+at most once every six hours, cached in between — then tells you how many tickers
+this build does not carry, and lists the matching one when you search for it — marked *not in ct's list*, because it is
+not. Picking it reads the symbol and decimals off the contract, exactly as
+pasting an address does, and it stays marked unverified until a release checks
+it.
+
+#### What the numbers are, and are not
+
+Depth, volume and APR come from Uniswap's index, not from the chain. ct did not
+measure them and does not vouch for them, so nothing routes, prices or spends on
+them — they decide what you *look at* next, and the trade that follows is quoted
+on chain like any other.
+
+Read the APR column with that in mind. Four figures is normal here and it is
+arithmetic, not a forecast: a day of fees on a thin pool, annualised. Most of
+these pools will not exist in a month.
+
+The privacy line is the one worth knowing. Opening explore or a pool table is
+the only moment ct talks to a third party, and it sends a token address — never
+your wallet address, your holdings, your searches, or anything about your X
+account. Reading a timeline still sends nothing to anyone, which is the whole
+reason the ticker list is baked into the build rather than fetched per tweet.
+
+### 0.0.19 — read one account, across every name it has worn
 
 0.0.18 put the numeric X id on your notes. This makes it do something.
 
