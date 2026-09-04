@@ -158,11 +158,48 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.20` |
-| Built from | `monemetrics/ct` @ `289fb4b` |
-| Built on | 2 September 2026 |
+| Version | `0.0.21` |
+| Built from | `monemetrics/ct` @ `8fe69d1` |
+| Built on | 4 September 2026 |
 
-### New in 0.0.20 — the markets behind the ticker
+### New in 0.0.21 — the swap tab stops asking first
+
+A password prompt was the first thing the swap tab showed you. Not to sign
+anything — just to look. Markets, pools, prices and balances are all reads off
+the chain and none of them needs a key, so the wall stood in front of the wrong
+things. The one moment a wallet is genuinely required is the press that signs.
+
+**Everything on the tab now works with the wallet locked.** Explore, search, the
+pool tables, live quotes, your balances — all of it. The buy button on a tweet
+opens a composer with the pair loaded and a price on screen, rather than a
+password box with the trade you wanted somewhere behind it.
+
+**The password is asked for once, in the review sheet**, on the button that
+sends: *unlock & swap*. One press opens the wallet and signs.
+
+A quote lives twenty seconds, and typing a password spends some of that. If it
+lapses while you type, the button offers you a fresh one instead of going dead —
+what gets signed is never a price that aged out while you were reaching for it.
+
+**Having no wallet at all is no longer a locked door either.** The tab opens on
+explore like anyone else's, and the composer's button reads *set up a wallet to
+swap*. That step still comes before a price, because a quote names the account
+that will receive the tokens, but it comes when you ask to trade rather than
+when you ask to look.
+
+Nothing about the vault itself changed: same encryption, same auto-lock, and the
+seed phrase still asks for the password separately even while the wallet is
+open — unlocked means *may spend*, not *may be copied*.
+
+#### Also: the site can tell the extension is installed
+
+ct's web app is being built, and this release carries its half of one handshake:
+on `ct.42069.gg` the page asks whether the extension is there and gets back that
+it is, and its version. That is the whole exchange. It is deliberately
+capability-free — no peer id, no wallet address, no account, no feed state
+crosses into the page — and it happens nowhere else.
+
+### 0.0.20 — the markets behind the ticker
 
 A tokenized stock on Robinhood Chain is not one market. `$AAPL` sits in about
 twenty pools: three against USDG across two Uniswap versions, one against ether,
