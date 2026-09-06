@@ -127,9 +127,9 @@ feature needs it, and nothing collects data about you:
 | **Read your browsing history** | The wording is Chrome's, and it overstates things. ct uses the `tabs` API to open a tab when you click a post, and to notice when an x.com tab has finished loading. It never reads your history. |
 | **Read and change your data on x.com** | Reads the posts and profiles X sends your browser, so it can rank and search them offline. **Since 0.0.9:** it can also act as you — like, repost, and post — but only in the moment you click, and only the action you clicked. ct never acts on your account on its own: nothing automated, nothing scheduled, nothing in the background. It still never follows, replies, or sends DMs. |
 | **Cookies on x.com** | Two cookies only: `twid`, so ct knows which X account you're signed in as, and `ct0`, the CSRF token X requires on its own requests. Neither is stored or sent anywhere. |
-| **ct.42069.gg** | The wallet-linking page, for linking an *external* wallet — those can't be reached from inside an extension, so signing has to happen on a normal web page. **Since 0.0.14** ct's built-in wallet signs its own pass in the panel, so most people never open this. |
+| **ct.42069.gg** | The wallet-linking page, for linking an *external* wallet — those can't be reached from inside an extension, so signing has to happen on a normal web page. **Since 0.0.14** ct's built-in wallet signs its own pass in the panel, so most people never open this. **Since 0.0.22** ct's web app on this domain can also ask the extension for two things: pool tables, and the posts you have already captured that mention a given market. Only in that direction, only for markets it names by contract address, and never posts you muted or heard from a peer. See the release notes below. |
 | **Robinhood Chain RPC** | Reads token balances for the broadcast gate and the wallet, and — **since 0.0.12** — sends the swaps you confirm. Nothing is *sent to the chain* without you pressing swap. **Since 0.0.14** ct will sign a broadcast pass by itself once your built-in wallet holds 100,000 $CT: that is a signature over a plain sentence, not a transaction — it spends nothing, approves nothing, and costs no gas. Switch it off under Settings → Network. |
-| **Uniswap's pool index** | **New in 0.0.20.** Depth, 24-hour volume and fee APR for a token's pools, and the list of what Robinhood has tokenized — none of which is readable from the chain itself. Asked only when you open **explore** or a pool table, never while you read a timeline. The request carries a token address and nothing else: no wallet address, no cookie, no X identity, no key. It is the only third-party API ct calls. |
+| **Uniswap's pool index** | **New in 0.0.20.** Depth, 24-hour volume and fee APR for a token's pools, and the list of what Robinhood has tokenized — none of which is readable from the chain itself. Asked only when you open **explore** or a pool table, never while you read a timeline — and, **since 0.0.22**, when ct's own web app on `ct.42069.gg` asks the extension for the same tables. The request carries a token address and nothing else: no wallet address, no cookie, no X identity, no key. It is the only third-party API ct calls. |
 | **beacon-1/2/3.42069.gg** | Relay servers that let peers find each other. Browsers can't connect to each other unaided. |
 | **Downloads** | Saves a post's video when you click **⤓**. Chrome fetches the MP4 itself, so ct never handles the file, and nothing is downloaded unless you ask for it. |
 | **Notifications** | **Since 0.0.17.** Raises a desktop notification when one of your alert topics matches — nothing else uses it. Every topic has its own bell, off is per topic, and Settings → Alerts has a master switch that silences all of them at once. No topics means no notifications, ever. |
@@ -158,11 +158,81 @@ icon/              the CT mark, 16–128px
 
 | | |
 | --- | --- |
-| Version | `0.0.21` |
-| Built from | `monemetrics/ct` @ `8fe69d1` |
-| Built on | 4 September 2026 |
+| Version | `0.0.22` |
+| Built from | `monemetrics/ct` @ `7fcf4a9` |
+| Built on | 6 September 2026 |
 
-### New in 0.0.21 — the swap tab stops asking first
+### New in 0.0.22 — the web app can ask the extension for things
+
+0.0.21 taught `ct.42069.gg` to notice that the extension is installed. That was
+a yes-or-no handshake and nothing more. This release gives it two things it can
+actually ask for: **the pool tables**, and **the posts you have already captured
+about a given market**. The extension names both when it answers the handshake,
+as `pools-v1` and `social-v1`.
+
+#### The pool tables
+
+The site cannot fetch these itself. Uniswap's index is reachable from the
+extension because the extension ships a host permission for it; a web page has
+no such thing, and the browser blocks the call. The data is public either way —
+the extension is just the half of the pair that is allowed to ask.
+
+What crosses is public market metadata and only that: pool address, protocol
+version, the two tokens, depth, 24-hour volume, fee APR. The request going the
+other way is one shape with one optional field, a token address — no method name
+and no URL — so the page cannot ask the extension to fetch something of the
+page's choosing. Answers are cached for a minute and capped at thirty requests a
+minute with four in flight.
+
+#### Posts about a market
+
+Read this one carefully, because it is the first time anything ct captured from
+X leaves the extension for a web page.
+
+The site sends one or two contract addresses and gets back the posts **your own
+copy of ct has already captured** that mention those markets. It cannot send a
+search string, a handle, or a date range: the request carries contract addresses
+or it is rejected, so the page can ask "what has been said about this market"
+and has no way to ask "what has this person been saying".
+
+**What counts as a mention** is an exact cashtag, the contract address itself, or
+the company name where ct ships one for that market. Matching respects word
+boundaries, so `$AI` matches *"$AI looks interesting"* but not *"$AIM"*, and
+*"chair and AI research"* matches nothing at all. A market ct ships no metadata
+for can only match on its address — the page cannot invent a ticker alias for an
+address of its choosing.
+
+**What crosses, per post:** its id, text, timestamp, author name and handle,
+like/repost/reply counts, and the quoted or reposted post if there is one. That
+list is the whole of it; the projection is built as an allowlist, so a field ct
+starts storing later does not join this by default.
+
+**What deliberately does not cross:** whether you liked or reposted the post,
+which timeline it came from, author bios and follower counts, anyone you have
+muted, and — the one most worth naming — anything ct *heard from a peer* over
+p2p rather than capturing in your own browser. Only what your browser saw for
+itself is eligible. Other people's relayed posts are not ct's to hand to a page.
+
+Each answer is at most twenty posts, flagged when there was more to say, with
+two requests in flight and thirty a minute.
+
+**Being plain about the trade:** this is captured timeline data crossing into a
+web page's JavaScript, and there is no per-request prompt — having ct installed
+and ct's own site open is what permits it. It is bounded to posts that mention
+the market in front of you, and it happens on `ct.42069.gg` and nowhere else.
+It is still a wider door than 0.0.21's, and the notes for that release below —
+which call the handshake capability-free, with no feed state crossing into the
+page — describe that build and no longer describe this one.
+
+Both bridges are fenced the same way: `ct.42069.gg` exactly, not a subdomain and
+not a lookalike suffix, plus `localhost` while the site is being developed, and
+the top frame only, so an embedded iframe cannot ask on the page's behalf.
+
+**Also:** a pool whose fee yield the index does not report now reads as
+unavailable rather than as `0%`. Missing is not the same as zero, and showing a
+confident nothing where there was no reading was the wrong answer.
+
+### 0.0.21 — the swap tab stops asking first
 
 A password prompt was the first thing the swap tab showed you. Not to sign
 anything — just to look. Markets, pools, prices and balances are all reads off
